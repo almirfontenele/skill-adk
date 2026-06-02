@@ -1,0 +1,32 @@
+{
+  "eval_id": 2,
+  "eval_name": "calculator-bot-project-creation",
+  "prompt": "i need to build an adk 2.0 project called 'calculator_bot' that helps users do math with gemini. the bot should be able to add, subtract, multiply, divide",
+  "assertions": [
+    {
+      "name": "project_structure_complete",
+      "description": "All required directories created",
+      "type": "file_existence"
+    },
+    {
+      "name": "calculator_tools_implemented",
+      "description": "Calculator functions implemented",
+      "type": "code_pattern"
+    },
+    {
+      "name": "agent_initialization",
+      "description": "Agent class properly initializes",
+      "type": "code_pattern"
+    },
+    {
+      "name": "type_hints_present",
+      "description": "Type hints present in code",
+      "type": "code_pattern"
+    },
+    {
+      "name": "main_entry_point",
+      "description": "main.py provides entry point",
+      "type": "file_content"
+    }
+  ]
+}

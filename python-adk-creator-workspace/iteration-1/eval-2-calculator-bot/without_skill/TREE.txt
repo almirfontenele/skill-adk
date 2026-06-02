@@ -1,0 +1,83 @@
+calculator_bot/
+│
+├── 📄 main.py                          [Entry point - runs interactive agent]
+├── 📄 requirements.txt                 [Dependencies: google-genai, python-dotenv]
+├── 📄 .env.example                     [Environment template - copy to .env]
+├── 📄 .gitignore                       [Git ignore rules]
+├── 📄 README.md                        [User documentation and setup guide]
+├── 📄 PROJECT_STRUCTURE.md             [Detailed architecture documentation]
+├── 📄 IMPLEMENTATION_SUMMARY.md        [Implementation details and examples]
+├── 📄 TREE.txt                         [This file]
+│
+└── 📁 src/                             [Source code package]
+    │
+    ├── 📄 __init__.py                  [Package metadata: version, author]
+    ├── 📄 config.py                    [Configuration management (80 lines)]
+    │                                    ├─ Config class: environment variables, validation
+    │                                    ├─ setup_logging(): dual output setup
+    │                                    └─ logger: application logger instance
+    │
+    ├── 📄 agent.py                     [Agent logic with function calling (180 lines)]
+    │                                    ├─ CalculatorAgent class
+    │                                    ├─ interact(): main method with function calling
+    │                                    ├─ process_tool_call(): tool execution
+    │                                    ├─ _get_tool_schema(): Gemini tool format
+    │                                    └─ run_interactive(): CLI interface
+    │
+    └── 📁 tools/                       [Calculator tool definitions]
+        │
+        ├── 📄 __init__.py              [Package exports]
+        │
+        └── 📄 calculator.py            [Tool implementations (220 lines)]
+                                         ├─ add(a, b): addition
+                                         ├─ subtract(a, b): subtraction
+                                         ├─ multiply(a, b): multiplication
+                                         ├─ divide(a, b): division with zero-check
+                                         ├─ get_calculator_tools(): JSON schemas
+                                         └─ execute_tool(): dispatcher function
+
+
+═══════════════════════════════════════════════════════════════════════════════
+
+FILE COUNT SUMMARY:
+  Total Files: 12
+  Python Files: 6 (.py)
+  Documentation: 4 (.md, .txt)
+  Configuration: 2 (.env.example, .gitignore)
+
+CODE STATISTICS:
+  Total Lines: ~1,087
+  Python Code: ~600 lines
+  Documentation: ~487 lines
+
+DIRECTORY STRUCTURE:
+  Root level: 8 files
+  src/: 3 files (agent.py, config.py, __init__.py)
+  src/tools/: 2 files (calculator.py, __init__.py)
+
+KEY FILES:
+  ✓ main.py (30 lines) - Entry point
+  ✓ src/agent.py (180 lines) - Agent with function calling
+  ✓ src/tools/calculator.py (220 lines) - Calculator tools
+  ✓ src/config.py (80 lines) - Configuration & logging
+  ✓ requirements.txt - 2 dependencies only
+
+═══════════════════════════════════════════════════════════════════════════════
+
+TOOL DEFINITIONS INCLUDED:
+  • add(a, b) → number
+  • subtract(a, b) → number
+  • multiply(a, b) → number
+  • divide(a, b) → number (with zero-division protection)
+
+FEATURES IMPLEMENTED:
+  ✓ Function calling with Gemini
+  ✓ Tool execution with result handling
+  ✓ Environment variable configuration
+  ✓ Comprehensive logging (file + console)
+  ✓ Error handling and validation
+  ✓ Interactive CLI interface
+  ✓ Type hints throughout
+  ✓ Production-ready structure
+
+═══════════════════════════════════════════════════════════════════════════════

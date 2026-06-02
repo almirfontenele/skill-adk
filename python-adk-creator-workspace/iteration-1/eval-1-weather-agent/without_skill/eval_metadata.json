@@ -1,0 +1,32 @@
+{
+  "eval_id": 1,
+  "eval_name": "weather-agent-project-creation",
+  "prompt": "create a python project called 'weather_agent' that uses gemini to answer questions about weather. it should be able to get current weather and forecast",
+  "assertions": [
+    {
+      "name": "project_structure_complete",
+      "description": "All required directories and files are created",
+      "type": "file_existence"
+    },
+    {
+      "name": "base_agent_has_function_calling",
+      "description": "Base agent class has methods for chat() and function calling",
+      "type": "code_pattern"
+    },
+    {
+      "name": "weather_tools_implemented",
+      "description": "Weather tools are implemented",
+      "type": "code_pattern"
+    },
+    {
+      "name": "environment_config",
+      "description": ".env.example file exists with GOOGLE_API_KEY placeholder",
+      "type": "file_existence"
+    },
+    {
+      "name": "documentation_complete",
+      "description": "README.md includes setup instructions",
+      "type": "file_content"
+    }
+  ]
+}

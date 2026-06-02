@@ -1,0 +1,278 @@
+research_assistant/
+│
+├── research_assistant/                           [Main Package]
+│   ├── __init__.py                              [Package init, version 0.1.0]
+│   ├── main.py                                  [CLI entry point, interactive mode]
+│   ├── agent.py                                 [ResearchAgent - core orchestrator]
+│   │   ├── ResearchAgent class
+│   │   ├── research() method - main public API
+│   │   ├── interactive_session() - CLI loop
+│   │   ├── _process_function_calls() - Gemini integration
+│   │   └── _execute_tool() - tool dispatcher
+│   ├── config.py                                [Configuration management]
+│   │   ├── Config - base configuration
+│   │   ├── DevelopmentConfig - dev overrides
+│   │   ├── ProductionConfig - prod overrides
+│   │   └── get_config() - factory function
+│   ├── tools.py                                 [Tool implementations]
+│   │   ├── WebSearchTool
+│   │   │   ├── search() - web search
+│   │   │   └── get_function_declaration()
+│   │   ├── ContentSummarizerTool
+│   │   │   ├── summarize() - content summarization
+│   │   │   └── get_function_declaration()
+│   │   ├── FetchPageTool
+│   │   │   ├── fetch() - page content extraction
+│   │   │   └── get_function_declaration()
+│   │   ├── get_tool_handlers() - handler registry
+│   │   └── get_tool_definitions() - Gemini tool schema
+│   └── examples/                                [Example scripts]
+│       ├── __init__.py
+│       ├── basic_research.py                   [Example: Basic research queries]
+│       └── custom_tools.py                     [Example: Direct tool usage]
+│
+├── tests/                                       [Test suite]
+│   ├── __init__.py
+│   ├── test_agent.py                          [Agent unit tests]
+│   │   └── TestResearchAgent
+│   │       ├── test_agent_initialization()
+│   │       ├── test_agent_with_default_config()
+│   │       ├── test_tool_handlers_available()
+│   │       ├── test_execute_tool_with_unknown_tool()
+│   │       └── test_execute_tool_with_error()
+│   └── test_tools.py                          [Tool unit tests]
+│       ├── TestWebSearchTool
+│       │   ├── test_search_with_valid_query()
+│       │   ├── test_search_with_empty_query()
+│       │   ├── test_search_with_none_query()
+│       │   ├── test_search_with_custom_num_results()
+│       │   └── test_get_function_declaration()
+│       ├── TestContentSummarizerTool
+│       │   ├── test_summarize_with_valid_content()
+│       │   ├── test_summarize_with_empty_content()
+│       │   ├── test_summarize_with_custom_length()
+│       │   └── test_get_function_declaration()
+│       └── TestFetchPageTool
+│           ├── test_fetch_with_empty_url()
+│           ├── test_fetch_with_none_url()
+│           └── test_get_function_declaration()
+│
+├── .gitignore                                   [Git ignore patterns]
+│   ├── Python caches (__pycache__, *.pyc)
+│   ├── Virtual environments (venv/, env/)
+│   ├── IDE files (.vscode, .idea)
+│   ├── Environment variables (.env)
+│   └── Project artifacts
+│
+├── .env.example                                 [Environment template]
+│   ├── GOOGLE_API_KEY
+│   ├── MODEL
+│   ├── MAX_SEARCH_RESULTS
+│   └── SUMMARIZATION_LENGTH
+│
+├── pyproject.toml                              [Project metadata & build]
+│   ├── [build-system]
+│   ├── [project] - name, version, dependencies
+│   ├── [project.optional-dependencies] - dev tools
+│   ├── [tool.black] - formatting config
+│   ├── [tool.isort] - import sorting
+│   └── [tool.mypy] - type checking
+│
+├── requirements.txt                            [Python dependencies]
+│   ├── google-genai>=0.4.0
+│   ├── requests>=2.31.0
+│   ├── beautifulsoup4>=4.12.0
+│   └── python-dotenv>=1.0.0
+│
+├── README.md                                    [Full documentation]
+│   ├── Features overview
+│   ├── Installation instructions
+│   ├── Usage examples
+│   ├── API documentation
+│   ├── Configuration guide
+│   ├── Testing instructions
+│   └── Troubleshooting
+│
+└── PROJECT_OVERVIEW.md                         [This file - detailed overview]
+    └── Component descriptions, patterns, and architecture
+
+
+KEY FILE DESCRIPTIONS
+═══════════════════════════════════════════════════════════════
+
+CORE IMPLEMENTATION FILES:
+─────────────────────────
+
+📄 agent.py (145 lines)
+   - ResearchAgent: Main orchestrator class
+   - Initializes Google Generative AI client
+   - Manages tool definitions and execution
+   - Handles function call processing from Gemini API
+   - Supports both interactive and programmatic usage
+   - Multi-turn conversation management
+
+📄 tools.py (330 lines)
+   - WebSearchTool: Search functionality (mock + extensible)
+   - ContentSummarizerTool: Extractive summarization
+   - FetchPageTool: Web page content extraction
+   - Tool handler registry and dispatcher
+   - Consistent tool declaration pattern for Gemini API
+   - Error handling and input validation
+
+📄 config.py (80 lines)
+   - Base Config class with environment variables
+   - DevelopmentConfig: Debug enabled, higher temperature
+   - ProductionConfig: Debug disabled, lower temperature
+   - Configuration factory function
+   - Validation for required settings
+
+📄 main.py (40 lines)
+   - CLI entry point
+   - Interactive mode support
+   - Single query mode
+   - Help text and usage examples
+
+
+TEST FILES:
+──────────
+
+📄 test_agent.py (50 lines)
+   - Agent initialization tests
+   - Default config tests
+   - Tool handler availability tests
+   - Error handling tests
+
+📄 test_tools.py (100 lines)
+   - WebSearchTool tests (5 tests)
+   - ContentSummarizerTool tests (4 tests)
+   - FetchPageTool tests (3 tests)
+
+
+EXAMPLE FILES:
+──────────────
+
+📄 basic_research.py (30 lines)
+   - Demonstrates basic research queries
+   - Shows result formatting
+   - Good starting point for new users
+
+📄 custom_tools.py (60 lines)
+   - Direct tool usage examples
+   - Shows tool handler invocation
+   - Demonstrates parameter usage
+
+
+CONFIGURATION FILES:
+───────────────────
+
+📄 pyproject.toml (45 lines)
+   - Project metadata (name, version, description)
+   - Dependencies (google-genai, requests, beautifulsoup4, python-dotenv)
+   - Development dependencies (pytest, black, isort, flake8, mypy)
+   - Tool configurations (black, isort, mypy)
+
+📄 requirements.txt (4 lines)
+   - Simplified dependency list for pip install
+
+📄 .env.example (5 lines)
+   - Environment variable template
+   - Documentation of all configurable values
+
+📄 .gitignore (20+ patterns)
+   - Python artifacts and caches
+   - Virtual environments
+   - IDE files
+   - Environment files (.env)
+
+
+DOCUMENTATION FILES:
+───────────────────
+
+📄 README.md (300+ lines)
+   - Complete user guide
+   - Installation and setup
+   - Usage examples (interactive and programmatic)
+   - API documentation
+   - Testing instructions
+   - Troubleshooting guide
+
+📄 PROJECT_OVERVIEW.md (This file)
+   - Detailed architecture overview
+   - Component descriptions
+   - Production considerations
+   - File manifests
+
+
+STATISTICS
+═══════════════════════════════════════════════════════════════
+
+Total Files:            15
+- Python source files:   9
+- Test files:            2
+- Configuration files:   4
+- Documentation files:   3
+
+Lines of Code:
+- Core implementation:   ~600 lines
+- Tests:                 ~150 lines
+- Examples:              ~90 lines
+- Total source:          ~840 lines
+
+Dependencies:
+- Production:            4 packages
+- Development:           6 packages (optional)
+
+Test Coverage:
+- Unit tests:            12 test cases
+- Coverage areas:        Agent, Tools, Config
+
+Documentation:
+- README:                Comprehensive user guide
+- Docstrings:            All functions documented
+- Type hints:            Added to function signatures
+
+
+TECHNOLOGY STACK
+═══════════════════════════════════════════════════════════════
+
+Core:
+  - Python 3.10+
+  - Google Generative AI SDK 0.4.0+
+    └─ Gemini 2.5 Flash model
+    └─ Function calling support
+  - HTTP client (requests)
+  - HTML parsing (BeautifulSoup4)
+
+Infrastructure:
+  - Configuration management (python-dotenv)
+  - Test framework (pytest)
+  - Code quality (black, isort, flake8, mypy)
+
+Patterns:
+  - Tool-using agent pattern
+  - Function calling / tool use
+  - Configuration factory pattern
+  - Tool handler registry pattern
+
+
+QUICK START GUIDE
+═══════════════════════════════════════════════════════════════
+
+1. Install dependencies:
+   $ pip install -r requirements.txt
+
+2. Configure API key:
+   $ cp .env.example .env
+   $ # Edit .env with your GOOGLE_API_KEY
+
+3. Run interactive mode:
+   $ python -m research_assistant.main --interactive
+
+4. Run single query:
+   $ python -m research_assistant.main "Your research query"
+
+5. Run tests:
+   $ pytest
+
+6. Run examples:
+   $ python -m research_assistant.examples.basic_research

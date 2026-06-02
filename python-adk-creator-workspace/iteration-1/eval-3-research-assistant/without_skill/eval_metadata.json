@@ -1,0 +1,32 @@
+{
+  "eval_id": 3,
+  "eval_name": "research-assistant-project-creation",
+  "prompt": "set up a new python project with google genai sdk. project name is 'research_assistant' and it should have tools for searching web and summarizing content",
+  "assertions": [
+    {
+      "name": "project_structure_complete",
+      "description": "Project structure with required folders",
+      "type": "file_existence"
+    },
+    {
+      "name": "research_tools_implemented",
+      "description": "Web search and summarization tools implemented",
+      "type": "code_pattern"
+    },
+    {
+      "name": "agent_setup_correct",
+      "description": "Agent configured correctly",
+      "type": "code_pattern"
+    },
+    {
+      "name": "requirements_minimal",
+      "description": "requirements.txt has minimal dependencies",
+      "type": "file_content"
+    },
+    {
+      "name": "readme_helpful",
+      "description": "README explains setup and usage",
+      "type": "file_content"
+    }
+  ]
+}

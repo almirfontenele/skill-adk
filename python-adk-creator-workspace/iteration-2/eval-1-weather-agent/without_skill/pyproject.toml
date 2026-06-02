@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "weather-agent"
+version = "0.1.0"
+description = "A Gemini-powered conversational weather assistant"
+requires-python = ">=3.11"
+dependencies = [
+    "google-genai>=1.0.0",
+    "httpx>=0.27.0",
+]
+
+[project.scripts]
+weather-agent = "main:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["weather_agent*"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-mock>=3.14",
+    "ruff>=0.4",
+]

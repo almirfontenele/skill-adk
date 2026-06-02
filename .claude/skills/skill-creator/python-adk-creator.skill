@@ -1,0 +1,272 @@
+---
+name: python-adk-creator
+description: |
+  Create a production-ready Python project using Google's Generative AI SDK (ADK 2.0) with agents and tools. Use this skill whenever the user wants to build a Python application with Gemini agents, function calling, or structured outputs. Includes project structure, base agent code, tool definitions, and environment configuration.
+compatibility: "Python 3.10+, google-genai SDK"
+---
+
+# Python ADK 2.0 Project Creator
+
+You're helping users bootstrap Python projects that use Google's Generative AI SDK (Gemini API) to build agents with native function calling and tools.
+
+## What This Skill Does
+
+Creates a complete, structured Python project ready for developing AI agents using the Gemini API. The generated project includes:
+
+- **Project structure** with separate folders for agents, tools, schemas, and config
+- **Base agent** using `gemini-2.5-flash` with a working example tool
+- **Dependency management** with minimal, pinned versions
+- **Environment setup** with `.env.example` for API keys
+- **README** with clear setup and execution instructions
+- **Best practices** for async/await, type hints, and clean code organization
+
+## Understanding the User's Need
+
+Users typically want this skill when:
+1. **Starting a new Gemini project** — they have an idea for an agent-based app and want a solid foundation
+2. **Learning the SDK** — they want working examples of agents + function calling
+3. **Rapid prototyping** — they need to test agent behavior quickly without manual setup
+4. **Production readiness** — they want industry-standard structure from day one
+
+The skill should automate the repetitive setup work so they can focus on implementing their specific agent logic.
+
+## Workflow
+
+### Phase 1: Gather Information
+
+Ask the user for:
+- **Project name** (used for folder name, must be valid Python identifier)
+- **Brief description** of what the agent will do (used in README and docstrings)
+- **Primary tools/functions** the agent needs (e.g., "weather lookup", "database query", "web search") — list 2-3; can add more later
+- **Google API key** (or note that you'll create `.env.example` and they add it later)
+
+**Validation:**
+- Project name must match pattern `^[a-z_][a-z0-9_]*$` (Python module naming)
+- Collect at least a basic description
+- If tools aren't specified, suggest 1-2 defaults (e.g., "calculator" + "current_time")
+
+### Phase 2: Generate Project Structure
+
+Create the project directory with this layout:
+
+```
+<project_name>/
+├── src/
+│   ├── agents/
+│   │   ├── __init__.py
+│   │   └── base_agent.py          # GeminiAgent generic class
+│   ├── tools/
+│   │   ├── __init__.py
+│   │   └── core_tools.py          # Tool functions for this project
+│   ├── schemas/
+│   │   ├── __init__.py
+│   │   └── types.py               # Pydantic models if needed
+│   └── config.py                  # Environment & settings
+├── main.py                        # Entry point / example usage
+├── .env.example                   # Template for API key
+├── .env                           # (user fills this in)
+├── README.md                      # Setup & usage instructions
+├── requirements.txt               # Dependencies
+└── .gitignore                     # Standard Python ignores
+```
+
+**IMPORTANT — no domain-specific subpackages inside `src/`:**
+Do NOT create extra subdirectories like `src/weather_agent/`, `src/calculator/`, or any folder named after the project's domain. All agent logic lives in `src/agents/base_agent.py` and all tools live in `src/tools/core_tools.py`. The four fixed directories (`agents/`, `tools/`, `schemas/`, `config.py`) are the only structure inside `src/`.
+
+### Phase 3: Create Base Files
+
+**requirements.txt:**
+```
+google-genai==0.1.0
+pydantic>=2.0
+python-dotenv>=1.0.0
+```
+
+**.env.example:**
+```
+GOOGLE_API_KEY=your-api-key-here
+```
+
+**src/config.py:** Load Google API key from .env, validate it exists
+
+**src/agents/base_agent.py:**
+- Create a **generic** `GeminiAgent` class that is NOT coupled to any specific domain:
+  - `__init__(self, tools: list, system_prompt: str = "", model: str = "gemini-2.5-flash")` — accepts any list of Python functions as tools and an optional system prompt
+  - `chat(self, prompt: str) -> str` — sends prompt to Gemini using **automatic function calling** and returns the final text response
+  - `reset(self)` — clears conversation history
+  - The class itself has NO knowledge of weather, calculators, or any specific domain — it is a pure orchestration shell
+  - Tools are passed in at instantiation; the agent registers them with the SDK automatically
+
+Example skeleton (adapt as needed):
+
+```python
+from google import genai
+from google.genai import types
+from src.config import get_api_key
+
+class GeminiAgent:
+    def __init__(self, tools: list, system_prompt: str = "", model: str = "gemini-2.5-flash"):
+        self.client = genai.Client(api_key=get_api_key())
+        self.model = model
+        self.tools = tools  # plain Python functions
+        self.system_prompt = system_prompt
+        self.history: list[types.Content] = []
+
+    def chat(self, prompt: str) -> str:
+        self.history.append(types.Content(role="user", parts=[types.Part.from_text(prompt)]))
+        response = self.client.models.generate_content(
+            model=self.model,
+            contents=self.history,
+            config=types.GenerateContentConfig(
+                tools=self.tools,
+                system_instruction=self.system_prompt or None,
+            ),
+        )
+        reply = response.text
+        self.history.append(types.Content(role="model", parts=[types.Part.from_text(reply)]))
+        return reply
+
+    def reset(self) -> None:
+        self.history = []
+```
+
+**src/tools/core_tools.py:**
+- Include 2-3 working examples based on what the user specified
+- Each tool is a simple Python function with docstring (for automatic function calling)
+- Examples: `get_current_time()`, `add(a, b)`, `get_weather(city)`
+
+**main.py:**
+- Simple script that imports the agent, initializes it with tools, and runs a demo chat
+
+**README.md:**
+- "Getting Started" section with step-by-step setup
+- "Running the Agent" with example command
+- "Adding Tools" guide for extending with new functions
+- "API Reference" with link to google-genai docs
+
+### Phase 4: Output & Next Steps
+
+1. **Create all files** in the project directory
+2. **Display summary** of what was created
+3. **Next actions for the user:**
+   - Add their Google API key to `.env`
+   - Install dependencies with `pip install -r requirements.txt`
+   - Run `python main.py` to test
+   - Extend with their own tools/agents
+
+---
+
+## Code Examples
+
+### Automatic Function Calling — DEFAULT, use this always
+
+The SDK executes Python functions automatically when the model decides to call them. You do NOT need to check `response.tool_calls`, loop over results, or send a second request. Just pass the functions and read `response.text`.
+
+```python
+from google import genai
+from google.genai import types
+
+def get_current_time() -> str:
+    """Returns the current time in HH:MM:SS format."""
+    from datetime import datetime
+    return datetime.now().strftime("%H:%M:%S")
+
+def add(a: float, b: float) -> float:
+    """Adds two numbers and returns the result."""
+    return a + b
+
+client = genai.Client(api_key="...")
+response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents="What time is it and what is 7 + 3?",
+    config=types.GenerateContentConfig(
+        tools=[get_current_time, add],  # plain functions — SDK handles the rest
+    ),
+)
+print(response.text)  # Final answer after all tool calls completed
+```
+
+**Rules for automatic function calling to work:**
+- Functions must have a docstring (used as the tool description)
+- Parameters must have type hints (`str`, `int`, `float`, `bool`)
+- Return type must be a primitive or dict — not a custom class
+- Do NOT check `response.tool_calls` after the call; with automatic mode it is always empty
+
+### Manual Function Calling — only when you need fine-grained control
+
+Use manual only if you need to intercept tool results before returning them to the model (e.g., to log, validate, or transform them). This requires a multi-turn loop and is significantly more complex.
+
+```python
+# 1. Declare the tool explicitly
+function = types.FunctionDeclaration(
+    name="get_weather",
+    description="Get the current weather for a location",
+    parameters_json_schema={
+        "type": "object",
+        "properties": {
+            "location": {"type": "string", "description": "City name, e.g. 'São Paulo'"}
+        },
+        "required": ["location"],
+    },
+)
+tool = types.Tool(function_declarations=[function])
+
+# 2. First model turn — model returns a function_call, NOT text
+response = client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents="What's the weather in São Paulo?",
+    config=types.GenerateContentConfig(tools=[tool]),
+)
+
+# 3. Execute the function yourself and send the result back
+for part in response.candidates[0].content.parts:
+    if part.function_call:
+        result = get_weather(**part.function_call.args)  # your implementation
+        follow_up = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=[
+                types.Content(role="user", parts=[types.Part.from_text("What's the weather in São Paulo?")]),
+                response.candidates[0].content,
+                types.Content(role="user", parts=[
+                    types.Part.from_function_response(name=part.function_call.name, response={"result": result})
+                ]),
+            ],
+            config=types.GenerateContentConfig(tools=[tool]),
+        )
+        print(follow_up.text)
+```
+
+**When NOT to use manual:** if you find yourself writing `if response.tool_calls:` and re-sending to the model, switch to automatic — you are reimplementing what the SDK already does.
+
+---
+
+## Implementation Notes
+
+- **Typing:** Use type hints throughout (`def chat(prompt: str) -> str:`)
+- **Async-ready:** Structure code to support async/await patterns later
+- **Error handling:** Include basic try/except for API calls, surface errors to user
+- **Logging:** Optional—keep it minimal in the template
+- **No hardcoding:** All config comes from `.env` or function parameters
+- **Documentation:** Every tool function has a clear docstring explaining inputs/outputs
+
+---
+
+## Troubleshooting
+
+If the user runs into issues:
+
+1. **"API key not found"** → Check that `.env` exists and `GOOGLE_API_KEY` is set
+2. **"google-genai not installed"** → Run `pip install -r requirements.txt`
+3. **"Module not found"** → Ensure they're running from the project root: `python main.py`
+4. **Tool not executing** → Check function signature and docstring are valid (used by auto-calling)
+
+---
+
+## Next Steps (After Project Creation)
+
+Suggest to the user:
+1. **Customize tools** — modify functions in `src/tools/core_tools.py`
+2. **Add prompting** — create a system prompt in the agent's `__init__`
+3. **Structured outputs** — use Pydantic models in `src/schemas/` for strict response formats
+4. **Chat history** — extend the agent to track conversation history
+5. **Production deployment** — move API key to secrets manager, add logging, error retry logic

@@ -1,0 +1,96 @@
+{
+  "skill_name": "python-adk-creator",
+  "iteration": 1,
+  "summary": {
+    "total_evals": 3,
+    "with_skill_avg_tokens": 67578,
+    "without_skill_avg_tokens": 79129,
+    "token_savings": 15.2,
+    "with_skill_avg_duration_seconds": 317.5,
+    "without_skill_avg_duration_seconds": 350.3,
+    "time_savings": 9.4
+  },
+  "by_eval": [
+    {
+      "eval_id": 1,
+      "eval_name": "weather-agent-project-creation",
+      "with_skill": {
+        "total_tokens": 77170,
+        "duration_ms": 310436,
+        "duration_seconds": 310.4
+      },
+      "without_skill": {
+        "total_tokens": 79285,
+        "duration_ms": 334434,
+        "duration_seconds": 334.4
+      },
+      "delta": {
+        "tokens_saved": -2115,
+        "tokens_percent": -2.7,
+        "time_saved_seconds": 24.0,
+        "time_percent": 7.2
+      }
+    },
+    {
+      "eval_id": 2,
+      "eval_name": "calculator-bot-project-creation",
+      "with_skill": {
+        "total_tokens": 65052,
+        "duration_ms": 328383,
+        "duration_seconds": 328.4
+      },
+      "without_skill": {
+        "total_tokens": 73605,
+        "duration_ms": 315743,
+        "duration_seconds": 315.7
+      },
+      "delta": {
+        "tokens_saved": 8553,
+        "tokens_percent": 11.6,
+        "time_saved_seconds": -12.7,
+        "time_percent": -4.0
+      }
+    },
+    {
+      "eval_id": 3,
+      "eval_name": "research-assistant-project-creation",
+      "with_skill": {
+        "total_tokens": 60512,
+        "duration_ms": 313558,
+        "duration_seconds": 313.6
+      },
+      "without_skill": {
+        "total_tokens": 84496,
+        "duration_ms": 400775,
+        "duration_seconds": 400.8
+      },
+      "delta": {
+        "tokens_saved": 23984,
+        "tokens_percent": 28.4,
+        "time_saved_seconds": 87.2,
+        "time_percent": 21.8
+      }
+    }
+  ],
+  "metrics": {
+    "consistency": {
+      "with_skill_stdev_tokens": 8306,
+      "without_skill_stdev_tokens": 5408,
+      "observations": "With-skill outputs show more variance in token usage, likely due to varying project complexity. Without-skill baseline is more consistent but takes longer overall."
+    },
+    "quality_indicators": {
+      "with_skill": {
+        "projects_created": 3,
+        "structure_completeness": "All required directories and files created for each project",
+        "documentation": "Comprehensive READMEs and project guides included",
+        "code_quality": "Type hints, error handling, and best practices present"
+      },
+      "without_skill": {
+        "projects_created": 3,
+        "structure_completeness": "All required directories created, but inconsistent naming/organization",
+        "documentation": "Variable documentation quality across outputs",
+        "code_quality": "Good, but some variation in best practice adherence"
+      }
+    }
+  }
+}

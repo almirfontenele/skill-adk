@@ -1,0 +1,15 @@
+weather_agent/
+├── .env.example                    # Environment variables template
+├── .gitignore                      # Git ignore patterns
+├── CONTRIBUTING.md                 # Contribution guidelines
+├── README.md                       # Project documentation
+├── main.py                         # Entry point and demo
+├── pyproject.toml                  # Project configuration (PEP 517/518)
+├── requirements.txt                # Python dependencies
+└── src/
+    └── weather_agent/
+        ├── __init__.py             # Package initialization
+        ├── agent.py                # Main WeatherAgent class
+        ├── config.py               # Configuration management
+        ├── models.py               # Pydantic data models
+        └── tools.py                # Weather tools implementation
